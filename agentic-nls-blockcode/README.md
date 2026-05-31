@@ -28,3 +28,9 @@ You can open the app directly in any browser:
 
 - Iterations are capped at 7 to keep rendering responsive.
 - A `Render` block is required to execute the workflow.
+
+## Tor Browser and Brave compatibility
+
+- The app now avoids newer JavaScript-only syntax so it can run on stricter browser engines.
+- If download APIs are blocked by browser privacy settings, the export JSON is shown in the **Generated sequence** panel for manual copy.
+- In Tor Browser, JavaScript must be enabled for the app to run (the highest security mode may disable scripts).

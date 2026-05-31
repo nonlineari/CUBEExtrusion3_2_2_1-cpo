@@ -51,11 +51,30 @@ const appState = {
   blocks: [],
 };
 
+function coalesce(value, fallback) {
+  return value === null || value === undefined ? fallback : value;
+}
+
+function getMatchValue(match, index, fallback) {
+  if (match && match[index]) {
+    return match[index];
+  }
+  return fallback;
+}
+
+function isElementTag(target, tagName) {
+  return Boolean(
+    target &&
+      target.tagName &&
+      String(target.tagName).toUpperCase() === String(tagName).toUpperCase()
+  );
+}
+
 function createBlock(type, values = {}) {
   const definition = blockDefinitions[type];
   const data = {};
   for (const field of definition.fields) {
-    data[field.key] = values[field.key] ?? field.defaultValue;
+    data[field.key] = coalesce(values[field.key], field.defaultValue);
   }
 
   return {
@@ -87,7 +106,7 @@ function renderBlocks() {
 
     const fieldsHtml = definition.fields
       .map((field) => {
-        const value = block.values[field.key] ?? "";
+        const value = coalesce(block.values[field.key], "");
         return `
           <label>${field.label}
             <input
@@ -118,11 +137,16 @@ function renderBlocks() {
 
 function escapeHtml(value) {
   return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .split("&")
+    .join("&amp;")
+    .split("<")
+    .join("&lt;")
+    .split(">")
+    .join("&gt;")
+    .split('"')
+    .join("&quot;")
+    .split("'")
+    .join("&#039;");
 }
 
 function parsePromptToBlocks(text) {
@@ -169,8 +193,8 @@ function parsePromptToBlocks(text) {
     }
   }
 
-  blocks.push(createBlock("setAxiom", { axiom: axiomMatch?.[1] || "F" }));
-  blocks.push(createBlock("setAngle", { angle: angleMatch?.[1] || "25" }));
+  blocks.push(createBlock("setAxiom", { axiom: getMatchValue(axiomMatch, 1, "F") }));
+  blocks.push(createBlock("setAngle", { angle: getMatchValue(angleMatch, 1, "25") }));
 
   if (rules.length === 0) {
     rules.push({ symbol: "F", replacement: "F[+F]F[-F]F" });
@@ -179,8 +203,10 @@ function parsePromptToBlocks(text) {
     blocks.push(createBlock("addRule", rule));
   }
 
-  blocks.push(createBlock("setIterations", { iterations: iterationMatch?.[1] || "4" }));
-  blocks.push(createBlock("setStep", { step: stepMatch?.[1] || "6" }));
+  blocks.push(
+    createBlock("setIterations", { iterations: getMatchValue(iterationMatch, 1, "4") })
+  );
+  blocks.push(createBlock("setStep", { step: getMatchValue(stepMatch, 1, "6") }));
   blocks.push(createBlock("render"));
   return blocks;
 }
@@ -190,7 +216,7 @@ function applyLSystem(axiom, rules, iterations) {
   for (let i = 0; i < iterations; i += 1) {
     let next = "";
     for (const symbol of current) {
-      next += rules[symbol] ?? symbol;
+      next += coalesce(rules[symbol], symbol);
     }
     current = next;
   }
@@ -319,6 +345,9 @@ function getBounds(sequence, angleDegrees, step) {
 
 function drawSequence(canvas, sequence, angleDegrees, step) {
   const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Canvas rendering is not available in this browser.");
+  }
   const { width, height } = canvas;
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, width, height);
@@ -378,7 +407,22 @@ function exportBlocksJson(blocks) {
     name: "agentic-nls-workflow",
     blocks,
   };
-  const file = new Blob([JSON.stringify(payload, null, 2)], {
+  const jsonPayload = JSON.stringify(payload, null, 2);
+
+  if (
+    typeof Blob === "undefined" ||
+    typeof URL === "undefined" ||
+    typeof URL.createObjectURL !== "function"
+  ) {
+    sequenceOut.textContent = jsonPayload;
+    return {
+      exported: false,
+      message:
+        "Download APIs are unavailable in this browser. JSON was placed in Generated sequence for manual copy.",
+    };
+  }
+
+  const file = new Blob([jsonPayload], {
     type: "application/json",
   });
   const url = URL.createObjectURL(file);
@@ -387,11 +431,15 @@ function exportBlocksJson(blocks) {
   anchor.download = "agentic-nls-workflow.json";
   anchor.click();
   URL.revokeObjectURL(url);
+  return {
+    exported: true,
+    message: "Workflow exported as JSON.",
+  };
 }
 
 blocksContainer.addEventListener("click", (event) => {
   const target = event.target;
-  if (!(target instanceof HTMLButtonElement)) {
+  if (!isElementTag(target, "button")) {
     return;
   }
 
@@ -424,7 +472,7 @@ blocksContainer.addEventListener("click", (event) => {
 
 blocksContainer.addEventListener("input", (event) => {
   const target = event.target;
-  if (!(target instanceof HTMLInputElement)) {
+  if (!isElementTag(target, "input")) {
     return;
   }
 
@@ -474,8 +522,8 @@ runBtn.addEventListener("click", () => {
 });
 
 exportBtn.addEventListener("click", () => {
-  exportBlocksJson(appState.blocks);
-  setStatus("Workflow exported as JSON.");
+  const output = exportBlocksJson(appState.blocks);
+  setStatus(output.message);
 });
 
 appState.blocks = parsePromptToBlocks("");
