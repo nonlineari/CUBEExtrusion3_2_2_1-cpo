@@ -32,11 +32,20 @@ It is an RFC for a strategy/capability abstraction layer that:
 
 1. Create an FFmpeg fork and branch (outside this repository).
 2. Add an RFC patch series (or discussion patch) referencing this module.
-3. Send RFC to `ffmpeg-devel@ffmpeg.org` with:
+3. Generate a short RFC 0/1 cover letter + patch set:
+   - `./vp56-community-lib/upstream/prepare_ffmpeg_rfc_cover.sh HEAD ./rfc-out`
+   - this creates:
+     - `./rfc-out/0000-*.patch` (cover letter, auto-filled from template)
+     - `./rfc-out/0001-*.patch` (your patch)
+4. Send RFC to `ffmpeg-devel@ffmpeg.org` with:
    - problem statement
    - compatibility behavior matrix
    - test evidence (including `vp09` tagging and truncation-safe mode)
-4. Iterate on maintainer feedback before requesting merge.
+5. Iterate on maintainer feedback before requesting merge.
+
+Send command:
+
+`git send-email --to=ffmpeg-devel@ffmpeg.org ./rfc-out/0000-*.patch ./rfc-out/0001-*.patch`
 
 ## RFC cover letter template
 
@@ -62,6 +71,10 @@ Feedback requested on:
 - naming and policy defaults
 - acceptance criteria for compatibility behavior
 ```
+
+Short ready-to-use version is available in:
+
+- `vp56-community-lib/upstream/FFMPEG_RFC_0_1_COVERLETTER.txt`
 
 ## Notes
 
