@@ -114,3 +114,5 @@ Use `--replace` only when you are sure you no longer need the original binary MI
 ## VP56 community library
 
 This integration includes `vp56-community-lib/`, an independent strategy library prepared for FFmpeg community RFC review (VP56-family parsing, vp09 reinterpretation path, truncation-safe policy).
+
+For FFmpeg-facing review readiness and fork/download instructions, see `cubic-nls/FORMZ_VCODEC_CORE_ASSET.md`.

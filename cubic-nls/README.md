@@ -83,3 +83,12 @@ To prepare a review bundle for FFmpeg community forwarding:
 - `./vp56-community-lib/upstream/create_submission_bundle.sh`
 
 See: `vp56-community-lib/upstream/FFMPEG_RFC_SUBMISSION.md`
+
+## formZ vcodec core asset
+
+The review-ready handoff document is:
+
+- `cubic-nls/FORMZ_VCODEC_CORE_ASSET.md`
+
+It provides fork/download instructions and the exact files intended for FFmpeg
+community review.

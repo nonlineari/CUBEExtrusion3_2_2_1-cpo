@@ -49,3 +49,6 @@ See `upstream/FFMPEG_RFC_SUBMISSION.md` for:
 - RFC cover-letter template
 - pointers to original FFmpeg VP56 sources
 - recommended submission route to `ffmpeg-devel`
+
+
+Core asset handoff note: `cubic-nls/FORMZ_VCODEC_CORE_ASSET.md`.
