@@ -109,3 +109,8 @@ Use `--replace` only when you are sure you no longer need the original binary MI
 - `--max-text-events <n>`: cap stored text meta events per track
 - `--indent <n>`: JSON indentation width (`0` writes compact JSON)
 
+
+
+## VP56 community library
+
+This integration includes `vp56-community-lib/`, an independent strategy library prepared for FFmpeg community RFC review (VP56-family parsing, vp09 reinterpretation path, truncation-safe policy).

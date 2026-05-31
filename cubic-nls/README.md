@@ -9,6 +9,7 @@ cubic-nls is the consolidated integration project built from four draft branches
 - `scripts/build_visual_language.py`: visual language animation generator
 - `midi_to_metadata.py`: MIDI to metadata conversion CLI
 - `analysis/BrushDynamics.java` and `analysis/brush_dynamics.lua`: brush dynamics analysis
+- `vp56-community-lib/`: independent VP56-family compatibility strategy library
 
 ## Visual music workflow (Agentic NLS)
 
@@ -72,3 +73,13 @@ A versioned summary is stored at `cubic-nls/VP56_DEBUG_TESTIMONY.md`.
 
 - This branch is intended as a combined repository candidate.
 - Keep it unmerged into `master` until full creative and technical review is done.
+
+## FFmpeg community-forward package
+
+A standalone VP56 family compatibility library is included at `vp56-community-lib/`.
+
+To prepare a review bundle for FFmpeg community forwarding:
+
+- `./vp56-community-lib/upstream/create_submission_bundle.sh`
+
+See: `vp56-community-lib/upstream/FFMPEG_RFC_SUBMISSION.md`
