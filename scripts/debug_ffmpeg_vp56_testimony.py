@@ -2,7 +2,7 @@
 """
 Generate a VP56 capability/debug testimony report for FFmpeg.
 
-This is intended for cubic-nls / agentic-nls-blockcode troubleshooting when
+This is intended for CUBEEXTRUSION-NLS / agentic-nls-blockcode troubleshooting when
 users request VP56-based pipelines (for example: vp6f bridge before H.264 MP4)
 or VP9/vp09 compatibility behavior.
 """

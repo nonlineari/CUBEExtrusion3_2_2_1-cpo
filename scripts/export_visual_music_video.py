@@ -2,7 +2,7 @@
 """
 Export a visual-music MP4 from prompt-driven style settings.
 
-This script is designed for the cubic-nls integration branch and can be used
+This script is designed for the CUBEEXTRUSION-NLS integration branch and can be used
 after iterating on prompts in agentic-nls-blockcode.
 
 Features:

@@ -1,6 +1,6 @@
 # vp56-community-lib
 
-Independent VP56-family strategy library for cubic-nls / agentic-nls-blockcode.
+Independent VP56-family strategy library for CUBEEXTRUSION-NLS / agentic-nls-blockcode.
 
 This module was created after VP56 debugging to provide a reusable logic layer
 that can be forwarded to FFmpeg community discussions as an RFC-style proposal.
@@ -51,4 +51,4 @@ See `upstream/FFMPEG_RFC_SUBMISSION.md` for:
 - recommended submission route to `ffmpeg-devel`
 
 
-Core asset handoff note: `cubic-nls/FORMZ_VCODEC_CORE_ASSET.md`.
+Core asset handoff note: `CUBEEXTRUSION-NLS/FORMZ_VCODEC_CORE_ASSET.md`.

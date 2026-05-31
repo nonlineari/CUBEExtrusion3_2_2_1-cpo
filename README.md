@@ -1,13 +1,13 @@
-CUBEExtrusion3_2_2_1-cpo
+CUBEEXTRUSION-NLS
 ========================
 
-## cubic-nls integration branch
+## CUBEEXTRUSION-NLS integration branch
 
-This integration branch combines draft PR #1, #2, #3, and #4 into a single integrated project candidate named **cubic-nls**.
+This integration branch combines draft PR #1, #2, #3, and #4 into a single integrated project candidate named **CUBEEXTRUSION-NLS**.
 
-See: `cubic-nls/README.md` for the integrated visual music workflow and module map.
+See: `CUBEEXTRUSION-NLS/README.md` for the integrated visual music workflow and module map.
 
-## New: Agentic NLS Blockcode Studio
+## New: CUBEEXTRUSION-NLS Blockcode Studio
 
 This repository now includes a browser-based blockcode app at:
 
@@ -115,4 +115,4 @@ Use `--replace` only when you are sure you no longer need the original binary MI
 
 This integration includes `vp56-community-lib/`, an independent strategy library prepared for FFmpeg community RFC review (VP56-family parsing, vp09 reinterpretation path, truncation-safe policy).
 
-For FFmpeg-facing review readiness and fork/download instructions, see `cubic-nls/FORMZ_VCODEC_CORE_ASSET.md`.
+For FFmpeg-facing review readiness and fork/download instructions, see `CUBEEXTRUSION-NLS/FORMZ_VCODEC_CORE_ASSET.md`.

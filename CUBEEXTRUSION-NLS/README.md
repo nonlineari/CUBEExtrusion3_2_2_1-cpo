@@ -1,6 +1,6 @@
-# cubic-nls
+# CUBEEXTRUSION-NLS
 
-cubic-nls is the consolidated integration project built from four draft branches in
+CUBEEXTRUSION-NLS is the consolidated integration project built from four draft branches in
 `nonlineari/CUBEExtrusion3_2_2_1-cpo`.
 
 ## Integrated components
@@ -67,7 +67,7 @@ This writes:
 
 The report includes local codec/encoder evidence and links to original FFmpeg VP56 source files on GitHub.
 
-A versioned summary is stored at `cubic-nls/VP56_DEBUG_TESTIMONY.md`.
+A versioned summary is stored at `CUBEEXTRUSION-NLS/VP56_DEBUG_TESTIMONY.md`.
 
 ## Notes
 
@@ -88,7 +88,7 @@ See: `vp56-community-lib/upstream/FFMPEG_RFC_SUBMISSION.md`
 
 The review-ready handoff document is:
 
-- `cubic-nls/FORMZ_VCODEC_CORE_ASSET.md`
+- `CUBEEXTRUSION-NLS/FORMZ_VCODEC_CORE_ASSET.md`
 
 It provides fork/download instructions and the exact files intended for FFmpeg
 community review.

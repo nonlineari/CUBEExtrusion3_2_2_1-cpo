@@ -1,4 +1,4 @@
-# Agentic NLS Blockcode Studio
+# CUBEEXTRUSION-NLS Blockcode Studio
 
 This module adds an "Agentic NLS" workflow builder to the repository.
 

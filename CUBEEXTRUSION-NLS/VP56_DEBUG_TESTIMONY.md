@@ -1,7 +1,7 @@
 # VP56 Debug Testimony (Agentic NLS Blockcode)
 
 This testimony records the first debug pass for VP56/libxVP56 support in the
-cubic-nls integration branch.
+CUBEEXTRUSION-NLS integration branch.
 
 ## What was checked
 

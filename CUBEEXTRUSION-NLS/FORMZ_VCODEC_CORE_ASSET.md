@@ -17,7 +17,7 @@ Debugging and validation are complete for the current environment:
 1. **Fork or download this repository**
    - `https://github.com/nonlineari/CUBEExtrusion3_2_2_1-cpo`
 2. Check out integration branch:
-   - `cubic-nls-integration-0bb6`
+   - `current integration branch for PR #5`
 3. Review core package:
    - `vp56-community-lib/`
 4. Generate RFC bundle:
@@ -32,7 +32,7 @@ Debugging and validation are complete for the current environment:
 - `vp56-community-lib/tests/test_vp56_community.c`
 - `scripts/export_visual_music_video.py`
 - `scripts/debug_ffmpeg_vp56_testimony.py`
-- `cubic-nls/VP56_DEBUG_TESTIMONY.md`
+- `CUBEEXTRUSION-NLS/VP56_DEBUG_TESTIMONY.md`
 
 ## Intent
 
