@@ -1,6 +1,12 @@
 CUBEExtrusion3_2_2_1-cpo
 ========================
 
+## cubic-nls integration branch
+
+This branch (`cursor/cubic-nls-integration-0bb6`) combines draft PR #1, #2, #3, and #4 into a single integrated project candidate named **cubic-nls**.
+
+See: `cubic-nls/README.md` for the integrated visual music workflow and module map.
+
 ## New: Agentic NLS Blockcode Studio
 
 This repository now includes a browser-based blockcode app at:
