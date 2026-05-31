@@ -54,3 +54,11 @@ Generate `.mp4` output from prompt-driven visual style using FFmpeg:
 - `python3 scripts/export_visual_music_video.py --duration 10 --mode auto`
 
 `--mode auto` attempts VP56 bridge (`vp6f`) when available, then encodes final `.mp4` with H.264.
+
+## VP56 / libxVP56 debugging
+
+If VP56 bridge mode fails, generate a diagnostic testimony report:
+
+- `python3 scripts/debug_ffmpeg_vp56_testimony.py`
+
+This produces markdown + JSON evidence in `output/` and links directly to FFmpeg GitHub VP56 source files used for verification.

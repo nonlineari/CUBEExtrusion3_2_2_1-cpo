@@ -47,6 +47,20 @@ Examples:
 
 Outputs are written to `output/visual_music_5s.mp4` or `output/visual_music_10s.mp4` by default.
 
+
+## VP56 debug testimony
+
+To debug requests like `libxVP56` and inspect what this FFmpeg build actually supports, run:
+
+`python3 scripts/debug_ffmpeg_vp56_testimony.py`
+
+This writes:
+
+- `output/ffmpeg_vp56_testimony.md`
+- `output/ffmpeg_vp56_testimony.json`
+
+The report includes local codec/encoder evidence and links to original FFmpeg VP56 source files on GitHub.
+
 ## Notes
 
 - This branch is intended as a combined repository candidate.

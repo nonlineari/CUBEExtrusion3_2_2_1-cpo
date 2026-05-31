@@ -296,19 +296,28 @@ def main() -> None:
     video_filter = build_video_filter(style, args.duration)
     audio_filter = build_audio_filter()
 
+    vp6f_available = ffmpeg_has_encoder("vp6f")
+    libxvp56_available = ffmpeg_has_encoder("libxvp56")
+
     if args.mode == "h264":
         selected_mode = "h264"
     elif args.mode == "vp56-bridge":
         selected_mode = "vp56-bridge"
     else:
-        selected_mode = "vp56-bridge" if ffmpeg_has_encoder("vp6f") else "h264"
+        selected_mode = "vp56-bridge" if vp6f_available else "h264"
 
-    if selected_mode == "vp56-bridge" and not ffmpeg_has_encoder("vp6f"):
+    if selected_mode == "vp56-bridge" and not vp6f_available:
         print("VP56 encoder (vp6f) not available. Falling back to direct H264 mode.")
+        print(
+            "Run `python3 scripts/debug_ffmpeg_vp56_testimony.py` for a full "
+            "diagnostic report and upstream VP56 source references."
+        )
         selected_mode = "h264"
 
     print(f"Prompt profile mode: {'dark' if style['dark_background'] else 'light'}")
     print(f"Encoding mode: {selected_mode}")
+    print(f"vp6f encoder available: {vp6f_available}")
+    print(f"libxvp56 encoder available: {libxvp56_available}")
     print(f"Duration: {args.duration}s")
     print(f"Output: {output_path}")
 
