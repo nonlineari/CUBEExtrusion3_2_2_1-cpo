@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" width="1400" height="820">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09090f" />
+      <stop offset="100%" stop-color="#161a2a" />
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1400" height="820" fill="url(#bg)" />
+  <rect x="70" y="78" width="1260" height="664" rx="24" fill="none" stroke="#9be7ff" stroke-opacity="0.25" />
+
+  <text x="90" y="122" font-family="monospace" font-size="24" fill="#e6f6ff">Custom Visual Language Animation</text>
+  <text x="90" y="150" font-family="monospace" font-size="13" fill="#98b7c7">
+    Layered parser -> token mapper -> narrative bridge
+  </text>
+
+  <g filter="url(#softGlow)">
+    
+  <line x1="307.1" y1="180.0" x2="307.1" y2="620.0" stroke="hsl(176 71% 50%)" stroke-opacity="0.16" stroke-width="1.4">
+    <animate attributeName="stroke-opacity" values="0.10;0.32;0.10" dur="3.60s" begin="0.00s" repeatCount="indefinite"/>
+  </line>
+
+  <line x1="464.3" y1="300.0" x2="464.3" y2="620.0" stroke="hsl(78 71% 48%)" stroke-opacity="0.16" stroke-width="1.4">
+    <animate attributeName="stroke-opacity" values="0.10;0.32;0.10" dur="3.90s" begin="0.45s" repeatCount="indefinite"/>
+  </line>
+
+  <line x1="621.4" y1="420.0" x2="621.4" y2="620.0" stroke="hsl(355 81% 52%)" stroke-opacity="0.16" stroke-width="1.4">
+    <animate attributeName="stroke-opacity" values="0.10;0.32;0.10" dur="4.20s" begin="0.90s" repeatCount="indefinite"/>
+  </line>
+
+  <line x1="778.6" y1="540.0" x2="778.6" y2="620.0" stroke="hsl(123 78% 53%)" stroke-opacity="0.16" stroke-width="1.4">
+    <animate attributeName="stroke-opacity" values="0.10;0.32;0.10" dur="4.50s" begin="1.35s" repeatCount="indefinite"/>
+  </line>
+
+  <line x1="935.7" y1="180.0" x2="935.7" y2="620.0" stroke="hsl(132 76% 51%)" stroke-opacity="0.16" stroke-width="1.4">
+    <animate attributeName="stroke-opacity" values="0.10;0.32;0.10" dur="4.80s" begin="1.80s" repeatCount="indefinite"/>
+  </line>
+
+  <line x1="1092.9" y1="300.0" x2="1092.9" y2="620.0" stroke="hsl(310 68% 57%)" stroke-opacity="0.16" stroke-width="1.4">
+    <animate attributeName="stroke-opacity" values="0.10;0.32;0.10" dur="5.10s" begin="2.25s" repeatCount="indefinite"/>
+  </line>
+
+    
+  <circle cx="307.1" cy="180.0" r="22.30" fill="hsl(176 71% 50%)" fill-opacity="0.12" stroke="hsl(176 71% 50%)" stroke-opacity="0.40" stroke-width="2">
+    <animate attributeName="r" values="16.73;42.37;16.73" dur="2.40s" begin="0.00s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.40;0.12;0.40" dur="2.40s" begin="0.00s" repeatCount="indefinite"/>
+  </circle>
+  <text x="307.1" y="186.0" text-anchor="middle" font-family="monospace" font-size="25" fill="hsl(176 71% 50%)">◐</text>
+
+  <circle cx="464.3" cy="300.0" r="23.60" fill="hsl(78 71% 48%)" fill-opacity="0.12" stroke="hsl(78 71% 48%)" stroke-opacity="0.43" stroke-width="2">
+    <animate attributeName="r" values="17.70;44.84;17.70" dur="3.30s" begin="0.45s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.43;0.12;0.43" dur="3.30s" begin="0.45s" repeatCount="indefinite"/>
+  </circle>
+  <text x="464.3" y="306.0" text-anchor="middle" font-family="monospace" font-size="26" fill="hsl(78 71% 48%)">▦</text>
+
+  <circle cx="621.4" cy="420.0" r="24.40" fill="hsl(355 81% 52%)" fill-opacity="0.12" stroke="hsl(355 81% 52%)" stroke-opacity="0.44" stroke-width="2">
+    <animate attributeName="r" values="18.30;46.36;18.30" dur="4.20s" begin="0.90s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.44;0.12;0.44" dur="4.20s" begin="0.90s" repeatCount="indefinite"/>
+  </circle>
+  <text x="621.4" y="426.0" text-anchor="middle" font-family="monospace" font-size="26" fill="hsl(355 81% 52%)">⌬</text>
+
+  <circle cx="778.6" cy="540.0" r="22.30" fill="hsl(123 78% 53%)" fill-opacity="0.12" stroke="hsl(123 78% 53%)" stroke-opacity="0.40" stroke-width="2">
+    <animate attributeName="r" values="16.73;42.37;16.73" dur="2.40s" begin="1.35s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.40;0.12;0.40" dur="2.40s" begin="1.35s" repeatCount="indefinite"/>
+  </circle>
+  <text x="778.6" y="546.0" text-anchor="middle" font-family="monospace" font-size="25" fill="hsl(123 78% 53%)">▣</text>
+
+  <circle cx="935.7" cy="180.0" r="22.30" fill="hsl(132 76% 51%)" fill-opacity="0.12" stroke="hsl(132 76% 51%)" stroke-opacity="0.40" stroke-width="2">
+    <animate attributeName="r" values="16.73;42.37;16.73" dur="3.30s" begin="1.80s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.40;0.12;0.40" dur="3.30s" begin="1.80s" repeatCount="indefinite"/>
+  </circle>
+  <text x="935.7" y="186.0" text-anchor="middle" font-family="monospace" font-size="25" fill="hsl(132 76% 51%)">◍</text>
+
+  <circle cx="1092.9" cy="300.0" r="24.80" fill="hsl(310 68% 57%)" fill-opacity="0.12" stroke="hsl(310 68% 57%)" stroke-opacity="0.45" stroke-width="2">
+    <animate attributeName="r" values="18.60;47.12;18.60" dur="4.20s" begin="2.25s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.45;0.12;0.45" dur="4.20s" begin="2.25s" repeatCount="indefinite"/>
+  </circle>
+  <text x="1092.9" y="306.0" text-anchor="middle" font-family="monospace" font-size="26" fill="hsl(310 68% 57%)">◈</text>
+
+    
+  <g>
+    <circle cx="307.1" cy="180.0" r="32.20" fill="none" stroke="hsl(176 71% 50%)" stroke-opacity="0.25" stroke-dasharray="4 8"/>
+    <circle r="4.8" fill="hsl(176 71% 50%)">
+      <animateMotion dur="4.00s" begin="0.00s" repeatCount="indefinite"
+        path="M 339.3 180.0 A 32.2 32.2 0 1 0 274.9 180.0 A 32.2 32.2 0 1 0 339.3 180.0"/>
+    </circle>
+  </g>
+
+  <g>
+    <circle cx="464.3" cy="300.0" r="33.07" fill="none" stroke="hsl(78 71% 48%)" stroke-opacity="0.25" stroke-dasharray="4 8"/>
+    <circle r="4.8" fill="hsl(78 71% 48%)">
+      <animateMotion dur="4.30s" begin="0.45s" repeatCount="indefinite"
+        path="M 497.4 300.0 A 33.1 33.1 0 1 0 431.2 300.0 A 33.1 33.1 0 1 0 497.4 300.0"/>
+    </circle>
+  </g>
+
+  <g>
+    <circle cx="621.4" cy="420.0" r="33.60" fill="none" stroke="hsl(355 81% 52%)" stroke-opacity="0.25" stroke-dasharray="4 8"/>
+    <circle r="4.8" fill="hsl(355 81% 52%)">
+      <animateMotion dur="4.60s" begin="0.90s" repeatCount="indefinite"
+        path="M 655.0 420.0 A 33.6 33.6 0 1 0 587.8 420.0 A 33.6 33.6 0 1 0 655.0 420.0"/>
+    </circle>
+  </g>
+
+  <g>
+    <circle cx="778.6" cy="540.0" r="32.20" fill="none" stroke="hsl(123 78% 53%)" stroke-opacity="0.25" stroke-dasharray="4 8"/>
+    <circle r="4.8" fill="hsl(123 78% 53%)">
+      <animateMotion dur="4.90s" begin="1.35s" repeatCount="indefinite"
+        path="M 810.8 540.0 A 32.2 32.2 0 1 0 746.4 540.0 A 32.2 32.2 0 1 0 810.8 540.0"/>
+    </circle>
+  </g>
+
+  <g>
+    <circle cx="935.7" cy="180.0" r="32.20" fill="none" stroke="hsl(132 76% 51%)" stroke-opacity="0.25" stroke-dasharray="4 8"/>
+    <circle r="4.8" fill="hsl(132 76% 51%)">
+      <animateMotion dur="5.20s" begin="1.80s" repeatCount="indefinite"
+        path="M 967.9 180.0 A 32.2 32.2 0 1 0 903.5 180.0 A 32.2 32.2 0 1 0 967.9 180.0"/>
+    </circle>
+  </g>
+
+  <g>
+    <circle cx="1092.9" cy="300.0" r="33.87" fill="none" stroke="hsl(310 68% 57%)" stroke-opacity="0.25" stroke-dasharray="4 8"/>
+    <circle r="4.8" fill="hsl(310 68% 57%)">
+      <animateMotion dur="5.50s" begin="2.25s" repeatCount="indefinite"
+        path="M 1126.7 300.0 A 33.9 33.9 0 1 0 1059.0 300.0 A 33.9 33.9 0 1 0 1126.7 300.0"/>
+    </circle>
+  </g>
+
+  </g>
+  
+  <text x="307.1" y="232.0" text-anchor="middle" font-family="monospace" font-size="13" fill="#e6f6ff">
+    third man
+  </text>
+
+  <text x="464.3" y="352.0" text-anchor="middle" font-family="monospace" font-size="13" fill="#e6f6ff">
+    333 Old Street
+  </text>
+
+  <text x="621.4" y="472.0" text-anchor="middle" font-family="monospace" font-size="13" fill="#e6f6ff">
+    French Connection
+  </text>
+
+  <text x="778.6" y="592.0" text-anchor="middle" font-family="monospace" font-size="13" fill="#e6f6ff">
+    l apartmente
+  </text>
+
+  <text x="935.7" y="232.0" text-anchor="middle" font-family="monospace" font-size="13" fill="#e6f6ff">
+    film about clubbing
+  </text>
+
+  <text x="1092.9" y="352.0" text-anchor="middle" font-family="monospace" font-size="13" fill="#e6f6ff">
+    machine learning
+  </text>
+
+
+  <line x1="90" y1="620" x2="1310" y2="620" stroke="#9be7ff" stroke-opacity="0.35" stroke-width="1.5"/>
+  <text x="92" y="606" font-family="monospace" font-size="12" fill="#98b7c7">
+    semantic timeline
+  </text>
+
+  <rect x="84" y="638" width="1232" height="86" rx="10" fill="#0b1020" stroke="#9be7ff" stroke-opacity="0.22"/>
+  <text x="92" y="664" font-family="monospace" font-size="14" fill="#e6f6ff">
+    <tspan x="92" dy="0">In the third man 333 Old Street French Connection l&apos;apartmente a</tspan><tspan x="92" dy="22">film about clubbing in work of machine learning</tspan>
+  </text>
+
+  <rect x="84" y="740" width="1232" height="114" rx="10" fill="#11172a" stroke="#9be7ff" stroke-opacity="0.22"/>
+  <text x="92" y="766" font-family="monospace" font-size="13" fill="#98b7c7">
+    <tspan x="92" dy="0">Barry Can&apos;t Swim Late Night Tales (2026) = continuous electronic/ambient/house</tspan><tspan x="92" dy="20">journey. New input = clubbing filmic layer: 333 Old Street as physical dancefloor</tspan><tspan x="92" dy="20">apartment where French cinematic obsession meets ML-driven sound design.</tspan>
+  </text>
+</svg>
