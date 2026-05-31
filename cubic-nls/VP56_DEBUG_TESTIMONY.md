@@ -41,3 +41,11 @@ the current FFmpeg build/environment. The reliable production path remains:
 
 If true VP56 bridge output is required, a custom FFmpeg build that exposes a
 VP56 encoder is needed before enabling that path.
+
+## VP9/vp09 compatibility check
+
+A parallel path is now available in the exporter:
+
+- `--mode vp9-vp09` to encode with `libvpx-vp9`
+- `-tag:v vp09` applied automatically for MP4 stream signaling
+- `--truncation-safe` for fragmented MP4 output when streams may be truncated

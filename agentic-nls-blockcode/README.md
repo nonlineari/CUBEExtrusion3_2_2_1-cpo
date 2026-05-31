@@ -52,8 +52,11 @@ Generate `.mp4` output from prompt-driven visual style using FFmpeg:
 
 - `python3 scripts/export_visual_music_video.py --duration 5 --mode h264`
 - `python3 scripts/export_visual_music_video.py --duration 10 --mode auto`
+- `python3 scripts/export_visual_music_video.py --duration 10 --mode vp9-vp09 --truncation-safe`
 
 `--mode auto` attempts VP56 bridge (`vp6f`) when available, then encodes final `.mp4` with H.264.
+`--mode vp9-vp09` uses `libvpx-vp9` and writes MP4 with `vp09` codec tag for cross-platform parser compatibility.
+`--truncation-safe` enables fragmented MP4 flags for better partial/truncated playback behavior.
 
 ## VP56 / libxVP56 debugging
 

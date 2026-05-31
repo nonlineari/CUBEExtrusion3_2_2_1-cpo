@@ -3,7 +3,8 @@
 Generate a VP56 capability/debug testimony report for FFmpeg.
 
 This is intended for cubic-nls / agentic-nls-blockcode troubleshooting when
-users request VP56-based pipelines (for example: vp6f bridge before H.264 MP4).
+users request VP56-based pipelines (for example: vp6f bridge before H.264 MP4)
+or VP9/vp09 compatibility behavior.
 """
 
 from __future__ import annotations
@@ -51,7 +52,7 @@ def parse_codec_rows(codecs_text: str) -> dict[str, dict[str, bool | str]]:
             continue
         flags = parts[0]
         name = parts[1]
-        if name not in {"vp5", "vp6", "vp6a", "vp6f"}:
+        if name not in {"vp5", "vp6", "vp6a", "vp6f", "vp9"}:
             continue
         rows[name] = {
             "raw": line.strip(),
@@ -74,28 +75,41 @@ def build_markdown_report(
     ffmpeg_version_line: str,
     codec_rows: dict[str, dict[str, bool | str]],
     encoder_presence: dict[str, bool],
-    encoder_probe_output: str,
+    vp6_probe_output: str,
+    vp9_probe_output: str,
     json_output_path: Path,
 ) -> str:
     utc_now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-    available_vp56_encoders = [k for k, v in encoder_presence.items() if v]
+    available_vp56_encoders = [
+        key
+        for key in ["vp6f", "vp6a", "vp6", "libxvp56"]
+        if encoder_presence.get(key, False)
+    ]
 
     if available_vp56_encoders:
-        verdict = (
+        vp56_verdict = (
             f"VP56 encoder(s) found: {', '.join(available_vp56_encoders)}. "
             "Bridge mode should be runnable."
         )
     else:
-        verdict = (
+        vp56_verdict = (
             "No VP56 encoder is available in this FFmpeg build. "
-            "VP56 bridge mode cannot run here; only H.264 direct output is supported."
+            "VP56 bridge mode cannot run here."
         )
+
+    if encoder_presence["libvpx-vp9"]:
+        vp9_verdict = (
+            "VP9 encoder (libvpx-vp9) is available. MP4 can be emitted with "
+            "`-tag:v vp09` for vp09-tagged compatibility signaling."
+        )
+    else:
+        vp9_verdict = "VP9 encoder (libvpx-vp9) is not available in this build."
 
     table_lines = [
         "| codec | decode | encode | raw row |",
         "|---|---:|---:|---|",
     ]
-    for key in ["vp5", "vp6", "vp6a", "vp6f"]:
+    for key in ["vp5", "vp6", "vp6a", "vp6f", "vp9"]:
         row = codec_rows.get(key)
         if row is None:
             table_lines.append(f"| {key} | no | no | not listed |")
@@ -107,7 +121,7 @@ def build_markdown_report(
 
     ref_lines = [f"- [{item['name']}]({item['url']})" for item in UPSTREAM_REFERENCES]
 
-    return f"""# FFmpeg VP56 Debug Testimony
+    return f"""# FFmpeg VP56/VP9 Debug Testimony
 
 Generated: {utc_now}
 
@@ -116,7 +130,7 @@ Generated: {utc_now}
 - FFmpeg: `{ffmpeg_version_line}`
 - JSON evidence: `{json_output_path}`
 
-## VP56 capability snapshot
+## Codec capability snapshot
 
 {chr(10).join(table_lines)}
 
@@ -126,22 +140,31 @@ Generated: {utc_now}
 - `vp6a` encoder present in `ffmpeg -encoders`: `{encoder_presence['vp6a']}`
 - `vp6` encoder present in `ffmpeg -encoders`: `{encoder_presence['vp6']}`
 - `libxvp56` encoder present in `ffmpeg -encoders`: `{encoder_presence['libxvp56']}`
+- `libvpx-vp9` encoder present in `ffmpeg -encoders`: `{encoder_presence['libvpx-vp9']}`
 
 Probe output (`ffmpeg -h encoder=vp6f`):
 
 ```text
-{encoder_probe_output.strip()}
+{vp6_probe_output.strip()}
+```
+
+Probe output (`ffmpeg -h encoder=libvpx-vp9`):
+
+```text
+{vp9_probe_output.strip()}
 ```
 
 ## Verdict
 
-{verdict}
+- VP56: {vp56_verdict}
+- VP9/vp09: {vp9_verdict}
 
 ## Interpretation for agentic-nls-blockcode
 
 - The requested `libxVP56` label is not an FFmpeg encoder name.
 - FFmpeg upstream provides VP56 family decoder sources (`vp56.c`, `vp6.c`) and codec entries for decoding.
-- In this environment, the exporter should continue using H.264 MP4 output (`libx264`) unless a custom FFmpeg build adds a VP56 encoder.
+- If VP56 encoder support is missing, use H.264 output or VP9-vp09 mode (when available) for broader platform operation.
+- For truncated/partial transfer scenarios, use fragmented MP4 movflags from the exporter (`--truncation-safe`).
 
 ## Upstream source references
 
@@ -151,7 +174,7 @@ Probe output (`ffmpeg -h encoder=vp6f`):
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Generate FFmpeg VP56 debug testimony report."
+        description="Generate FFmpeg VP56/VP9 debug testimony report."
     )
     parser.add_argument(
         "--output-md",
@@ -171,6 +194,7 @@ def main() -> None:
     encoders = run(["ffmpeg", "-hide_banner", "-encoders"])
     codecs = run(["ffmpeg", "-hide_banner", "-codecs"])
     vp6_probe = run(["ffmpeg", "-hide_banner", "-h", "encoder=vp6f"])
+    vp9_probe = run(["ffmpeg", "-hide_banner", "-h", "encoder=libvpx-vp9"])
 
     version_line = ffmpeg_version.stdout.splitlines()[0] if ffmpeg_version.stdout else "unknown"
     codec_rows = parse_codec_rows(codecs.stdout)
@@ -179,6 +203,7 @@ def main() -> None:
         "vp6a": has_encoder(encoders.stdout, "vp6a"),
         "vp6": has_encoder(encoders.stdout, "vp6"),
         "libxvp56": has_encoder(encoders.stdout, "libxvp56"),
+        "libvpx-vp9": has_encoder(encoders.stdout, "libvpx-vp9"),
     }
 
     project_root = Path(__file__).resolve().parents[1]
@@ -194,6 +219,8 @@ def main() -> None:
         "encoder_presence": encoder_presence,
         "vp6f_probe_stdout": vp6_probe.stdout,
         "vp6f_probe_stderr": vp6_probe.stderr,
+        "vp9_probe_stdout": vp9_probe.stdout,
+        "vp9_probe_stderr": vp9_probe.stderr,
         "upstream_references": UPSTREAM_REFERENCES,
     }
     json_path.write_text(json.dumps(evidence, indent=2), encoding="utf-8")
@@ -202,7 +229,8 @@ def main() -> None:
         ffmpeg_version_line=version_line,
         codec_rows=codec_rows,
         encoder_presence=encoder_presence,
-        encoder_probe_output=(vp6_probe.stdout + "\n" + vp6_probe.stderr).strip(),
+        vp6_probe_output=(vp6_probe.stdout + "\n" + vp6_probe.stderr).strip(),
+        vp9_probe_output=(vp9_probe.stdout + "\n" + vp9_probe.stderr).strip(),
         json_output_path=json_path.relative_to(project_root),
     )
     md_path.write_text(report, encoding="utf-8")

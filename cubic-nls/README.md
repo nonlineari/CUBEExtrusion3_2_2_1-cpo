@@ -41,11 +41,16 @@ Examples:
 
   `python3 scripts/export_visual_music_video.py --duration 10 --mode auto`
 
+- 10-second MP4 in VP9/vp09 mode (for parser reinterpretation and gatekeeper compatibility checks):
+
+  `python3 scripts/export_visual_music_video.py --duration 10 --mode vp9-vp09 --truncation-safe`
+
 - Force VP56 bridge pipeline (vp6f intermediate -> H.264 mp4):
 
   `python3 scripts/export_visual_music_video.py --duration 10 --mode vp56-bridge --keep-intermediate`
 
 Outputs are written to `output/visual_music_5s.mp4` or `output/visual_music_10s.mp4` by default.
+Use `--truncation-safe` when fragmented MP4 behavior is required for truncated transfer scenarios.
 
 
 ## VP56 debug testimony

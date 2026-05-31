@@ -7,8 +7,10 @@ after iterating on prompts in agentic-nls-blockcode.
 
 Features:
 - MP4 output with H.264 encoder (libx264)
+- optional MP4 output with VP9 encoder using vp09 tag (libvpx-vp9)
 - duration presets: 5s or 10s
 - optional VP56 bridge mode (vp6f -> h264 mp4) when encoder is available
+- truncation-safe fragmented MP4 movflags mode
 """
 
 from __future__ import annotations
@@ -136,11 +138,18 @@ def build_audio_filter() -> str:
     )
 
 
+def compute_movflags(truncation_safe: bool) -> str:
+    if truncation_safe:
+        return "+faststart+frag_keyframe+empty_moov+default_base_moof"
+    return "+faststart"
+
+
 def encode_h264(
     output_path: Path,
     duration: int,
     video_filter: str,
     audio_filter: str,
+    movflags: str,
 ) -> None:
     run_command(
         [
@@ -171,7 +180,62 @@ def encode_h264(
             "-b:a",
             "160k",
             "-movflags",
-            "+faststart",
+            movflags,
+            "-shortest",
+            str(output_path),
+        ]
+    )
+
+
+def encode_vp9_vp09(
+    output_path: Path,
+    duration: int,
+    video_filter: str,
+    audio_filter: str,
+    movflags: str,
+) -> None:
+    run_command(
+        [
+            "ffmpeg",
+            "-y",
+            "-f",
+            "lavfi",
+            "-i",
+            f"color=c=black:s=1280x720:r=30:d={duration}",
+            "-f",
+            "lavfi",
+            "-i",
+            f"sine=frequency=220:sample_rate=48000:duration={duration}",
+            "-vf",
+            video_filter,
+            "-af",
+            audio_filter,
+            "-c:v",
+            "libvpx-vp9",
+            "-pix_fmt",
+            "yuv420p",
+            "-row-mt",
+            "1",
+            "-tile-columns",
+            "1",
+            "-frame-parallel",
+            "1",
+            "-deadline",
+            "good",
+            "-cpu-used",
+            "2",
+            "-crf",
+            "33",
+            "-b:v",
+            "0",
+            "-tag:v",
+            "vp09",
+            "-c:a",
+            "aac",
+            "-b:a",
+            "160k",
+            "-movflags",
+            movflags,
             "-shortest",
             str(output_path),
         ]
@@ -183,6 +247,7 @@ def encode_vp56_bridge(
     duration: int,
     video_filter: str,
     audio_filter: str,
+    movflags: str,
     keep_intermediate: bool,
 ) -> None:
     with tempfile.TemporaryDirectory(prefix="cubic_nls_vp56_") as temp_dir:
@@ -232,7 +297,7 @@ def encode_vp56_bridge(
                 "-b:a",
                 "160k",
                 "-movflags",
-                "+faststart",
+                movflags,
                 "-shortest",
                 str(output_path),
             ]
@@ -246,7 +311,7 @@ def encode_vp56_bridge(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Export visual-music MP4 (H264) with 5s/10s presets."
+        description="Export visual-music MP4 with 5s/10s presets and codec modes."
     )
     parser.add_argument(
         "--duration",
@@ -257,9 +322,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--mode",
-        choices=["auto", "h264", "vp56-bridge"],
+        choices=["auto", "h264", "vp9-vp09", "vp56-bridge"],
         default="auto",
-        help="Encoding mode: direct H264, VP56 bridge, or auto-detect.",
+        help=(
+            "Encoding mode: direct H264, VP9-vp09 MP4, VP56 bridge, or auto-detect. "
+            "Auto keeps H264 default unless VP56 bridge is available."
+        ),
     )
     parser.add_argument(
         "--prompt",
@@ -276,6 +344,11 @@ def parse_args() -> argparse.Namespace:
         "--keep-intermediate",
         action="store_true",
         help="Keep VP56 intermediate .flv file when using vp56-bridge.",
+    )
+    parser.add_argument(
+        "--truncation-safe",
+        action="store_true",
+        help="Use fragmented MP4 movflags for better partial/truncated playback behavior.",
     )
     return parser.parse_args()
 
@@ -295,12 +368,16 @@ def main() -> None:
     style = parse_prompt_style(args.prompt)
     video_filter = build_video_filter(style, args.duration)
     audio_filter = build_audio_filter()
+    movflags = compute_movflags(args.truncation_safe)
 
     vp6f_available = ffmpeg_has_encoder("vp6f")
     libxvp56_available = ffmpeg_has_encoder("libxvp56")
+    vp9_available = ffmpeg_has_encoder("libvpx-vp9")
 
     if args.mode == "h264":
         selected_mode = "h264"
+    elif args.mode == "vp9-vp09":
+        selected_mode = "vp9-vp09"
     elif args.mode == "vp56-bridge":
         selected_mode = "vp56-bridge"
     else:
@@ -314,11 +391,17 @@ def main() -> None:
         )
         selected_mode = "h264"
 
+    if selected_mode == "vp9-vp09" and not vp9_available:
+        print("VP9 encoder (libvpx-vp9) not available. Falling back to direct H264 mode.")
+        selected_mode = "h264"
+
     print(f"Prompt profile mode: {'dark' if style['dark_background'] else 'light'}")
     print(f"Encoding mode: {selected_mode}")
     print(f"vp6f encoder available: {vp6f_available}")
     print(f"libxvp56 encoder available: {libxvp56_available}")
+    print(f"libvpx-vp9 encoder available: {vp9_available}")
     print(f"Duration: {args.duration}s")
+    print(f"movflags: {movflags}")
     print(f"Output: {output_path}")
 
     if selected_mode == "vp56-bridge":
@@ -327,7 +410,16 @@ def main() -> None:
             duration=args.duration,
             video_filter=video_filter,
             audio_filter=audio_filter,
+            movflags=movflags,
             keep_intermediate=args.keep_intermediate,
+        )
+    elif selected_mode == "vp9-vp09":
+        encode_vp9_vp09(
+            output_path=output_path,
+            duration=args.duration,
+            video_filter=video_filter,
+            audio_filter=audio_filter,
+            movflags=movflags,
         )
     else:
         encode_h264(
@@ -335,6 +427,7 @@ def main() -> None:
             duration=args.duration,
             video_filter=video_filter,
             audio_filter=audio_filter,
+            movflags=movflags,
         )
 
     print(f"Wrote MP4: {output_path}")
