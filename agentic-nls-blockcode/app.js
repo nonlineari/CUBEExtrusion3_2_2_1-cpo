@@ -51,6 +51,19 @@ const appState = {
   blocks: [],
 };
 
+const namedColors = {
+  red: "#ef4444",
+  white: "#f8fafc",
+  blue: "#3b82f6",
+  black: "#020617",
+  green: "#22c55e",
+  yellow: "#eab308",
+  orange: "#f97316",
+  cyan: "#06b6d4",
+  purple: "#a855f7",
+  magenta: "#d946ef",
+};
+
 function coalesce(value, fallback) {
   return value === null || value === undefined ? fallback : value;
 }
@@ -68,6 +81,45 @@ function isElementTag(target, tagName) {
       target.tagName &&
       String(target.tagName).toUpperCase() === String(tagName).toUpperCase()
   );
+}
+
+function extractPromptProfile(sourceText) {
+  const source = String(sourceText || "");
+  const lower = source.toLowerCase();
+  const palette = [];
+
+  for (const key of Object.keys(namedColors)) {
+    if (key !== "black" && lower.indexOf(key) !== -1) {
+      palette.push(namedColors[key]);
+    }
+  }
+
+  if (palette.length === 0) {
+    palette.push("#22c55e", "#0ea5e9", "#f97316");
+  }
+
+  const sidesMatch = lower.match(/(\d+)\s*(?:-| )?sided/);
+  let sides = 6;
+  if (sidesMatch && sidesMatch[1]) {
+    sides = Math.max(3, Math.min(12, Number(sidesMatch[1])));
+  }
+
+  return {
+    source,
+    useGeometricMaster:
+      /(cube|3d|3-dimensional|three-dimensional|fold|neural|network|circular|sided)/i.test(
+        lower
+      ),
+    leftToRight: /left\s*(?:to|2)\s*right/i.test(lower),
+    circular: /circular|radial|ring/i.test(lower),
+    cube: /cube|box/i.test(lower),
+    fold: /fold|origami/i.test(lower),
+    sides,
+    palette,
+    background: /black background|dark background|on black/i.test(lower)
+      ? namedColors.black
+      : "#ffffff",
+  };
 }
 
 function createBlock(type, values = {}) {
@@ -166,6 +218,7 @@ function parsePromptToBlocks(text) {
 
   const blocks = [];
   const lower = source.toLowerCase();
+  const profile = extractPromptProfile(source);
 
   const axiomMatch = source.match(/axiom\s*(?:is|=|:)?\s*([A-Za-z+\-\[\]\/\\]+)\b/i);
   const angleMatch = source.match(/angle\s*(?:is|of|=|:)?\s*(-?\d+(?:\.\d+)?)/i);
@@ -183,7 +236,10 @@ function parsePromptToBlocks(text) {
   }
 
   if (rules.length === 0) {
-    if (/(fern|tree|branch|plant)/i.test(lower)) {
+    if (profile.useGeometricMaster) {
+      rules.push({ symbol: "F", replacement: "F[+G]F[-G]FC" });
+      rules.push({ symbol: "G", replacement: "GG" });
+    } else if (/(fern|tree|branch|plant)/i.test(lower)) {
       rules.push({ symbol: "F", replacement: "F[+F]F[-F]F" });
     } else if (/koch|snowflake/i.test(lower)) {
       rules.push({ symbol: "F", replacement: "F+F-F-F+F" });
@@ -193,8 +249,17 @@ function parsePromptToBlocks(text) {
     }
   }
 
-  blocks.push(createBlock("setAxiom", { axiom: getMatchValue(axiomMatch, 1, "F") }));
-  blocks.push(createBlock("setAngle", { angle: getMatchValue(angleMatch, 1, "25") }));
+  const defaultAxiom = profile.useGeometricMaster ? "FCF" : "F";
+  const defaultAngle = profile.useGeometricMaster ? String(Math.round(360 / profile.sides)) : "25";
+  const defaultIterations = profile.useGeometricMaster ? "3" : "4";
+  const defaultStep = profile.useGeometricMaster ? "10" : "6";
+
+  blocks.push(
+    createBlock("setAxiom", { axiom: getMatchValue(axiomMatch, 1, defaultAxiom) })
+  );
+  blocks.push(
+    createBlock("setAngle", { angle: getMatchValue(angleMatch, 1, defaultAngle) })
+  );
 
   if (rules.length === 0) {
     rules.push({ symbol: "F", replacement: "F[+F]F[-F]F" });
@@ -204,9 +269,11 @@ function parsePromptToBlocks(text) {
   }
 
   blocks.push(
-    createBlock("setIterations", { iterations: getMatchValue(iterationMatch, 1, "4") })
+    createBlock("setIterations", {
+      iterations: getMatchValue(iterationMatch, 1, defaultIterations),
+    })
   );
-  blocks.push(createBlock("setStep", { step: getMatchValue(stepMatch, 1, "6") }));
+  blocks.push(createBlock("setStep", { step: getMatchValue(stepMatch, 1, defaultStep) }));
   blocks.push(createBlock("render"));
   return blocks;
 }
@@ -232,6 +299,7 @@ function validateNumber(value, fallback) {
 }
 
 function runWorkflow(blocks) {
+  const profile = extractPromptProfile(promptInput.value);
   const context = {
     axiom: "F",
     angle: 25,
@@ -289,7 +357,16 @@ function runWorkflow(blocks) {
   }
 
   const sequence = applyLSystem(context.axiom, context.rules, context.iterations);
-  drawSequence(renderCanvas, sequence, context.angle, context.step);
+
+  if (profile.useGeometricMaster) {
+    drawGeometricMaster(renderCanvas, sequence, context.angle, context.step, profile);
+    statusLines.push(
+      `Renderer mode: geometric-master (${profile.sides}-sided, palette ${profile.palette.length})`
+    );
+  } else {
+    drawSequence(renderCanvas, sequence, context.angle, context.step, profile);
+    statusLines.push("Renderer mode: lsystem-classic");
+  }
 
   return {
     sequence,
@@ -343,13 +420,253 @@ function getBounds(sequence, angleDegrees, step) {
   return { minX, maxX, minY, maxY };
 }
 
-function drawSequence(canvas, sequence, angleDegrees, step) {
+function hexToRgb(hexColor) {
+  const hex = String(hexColor || "").replace("#", "");
+  if (hex.length !== 6) {
+    return { r: 34, g: 197, b: 94 };
+  }
+  return {
+    r: parseInt(hex.slice(0, 2), 16),
+    g: parseInt(hex.slice(2, 4), 16),
+    b: parseInt(hex.slice(4, 6), 16),
+  };
+}
+
+function colorFromPalette(palette, index, alpha, backgroundColor) {
+  const color = palette[index % palette.length];
+  const rgb = hexToRgb(color);
+
+  if (backgroundColor === "#ffffff" && color.toLowerCase() === "#f8fafc") {
+    return `rgba(148, 163, 184, ${alpha})`;
+  }
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+}
+
+function projectPoint(point) {
+  return {
+    x: point.x + point.z * 0.55,
+    y: point.y - point.z * 0.35,
+  };
+}
+
+function drawProjectedCube(ctx, point, size, transform, strokeColor) {
+  const half = size / 2;
+  const vertices = [
+    { x: point.x - half, y: point.y - half, z: point.z - half },
+    { x: point.x + half, y: point.y - half, z: point.z - half },
+    { x: point.x + half, y: point.y + half, z: point.z - half },
+    { x: point.x - half, y: point.y + half, z: point.z - half },
+    { x: point.x - half, y: point.y - half, z: point.z + half },
+    { x: point.x + half, y: point.y - half, z: point.z + half },
+    { x: point.x + half, y: point.y + half, z: point.z + half },
+    { x: point.x - half, y: point.y + half, z: point.z + half },
+  ].map((vertex) => transform(projectPoint(vertex)));
+
+  const edges = [
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 0],
+    [4, 5],
+    [5, 6],
+    [6, 7],
+    [7, 4],
+    [0, 4],
+    [1, 5],
+    [2, 6],
+    [3, 7],
+  ];
+
+  ctx.strokeStyle = strokeColor;
+  ctx.lineWidth = 1;
+  for (const edge of edges) {
+    const a = vertices[edge[0]];
+    const b = vertices[edge[1]];
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+  }
+}
+
+function buildMasterSegments(sequence, angleDegrees, step, profile) {
+  const segments = [];
+  const angle = (Math.PI / 180) * angleDegrees;
+  const turn = Number.isFinite(angle) && angle !== 0 ? angle : (Math.PI * 2) / profile.sides;
+
+  const maxSegments = 900;
+  const stride = Math.max(1, Math.floor(sequence.length / maxSegments));
+
+  let x = profile.leftToRight ? -80 : 0;
+  let y = 0;
+  let z = 0;
+  let heading = -Math.PI / 2;
+  const stack = [];
+
+  for (let idx = 0; idx < sequence.length; idx += 1) {
+    if (idx % stride !== 0 && sequence[idx] !== "[" && sequence[idx] !== "]") {
+      continue;
+    }
+
+    const char = sequence[idx];
+    if (char === "F" || char === "G") {
+      const rise = char === "G" ? step * 0.25 : 0;
+      const nx = x + Math.cos(heading) * step;
+      const ny = y + Math.sin(heading) * step;
+      const nz = z + rise + (idx % 2 === 0 ? step * 0.04 : -step * 0.04);
+      segments.push({
+        x1: x,
+        y1: y,
+        z1: z,
+        x2: nx,
+        y2: ny,
+        z2: nz,
+        depth: stack.length,
+        index: idx,
+        cubeMarker: char === "G" || idx % Math.max(5, profile.sides) === 0,
+      });
+      x = nx;
+      y = ny;
+      z = nz;
+    } else if (char === "C") {
+      segments.push({
+        x1: x,
+        y1: y,
+        z1: z,
+        x2: x,
+        y2: y,
+        z2: z,
+        depth: stack.length,
+        index: idx,
+        cubeMarker: true,
+      });
+    } else if (char === "+") {
+      heading += turn;
+    } else if (char === "-") {
+      heading -= turn;
+    } else if (char === "[") {
+      stack.push({ x, y, z, heading });
+      z += step * 0.22;
+    } else if (char === "]") {
+      const saved = stack.pop();
+      if (saved) {
+        x = saved.x;
+        y = saved.y;
+        z = saved.z;
+        heading = saved.heading;
+      }
+    }
+  }
+
+  return segments;
+}
+
+function drawGeometricMaster(canvas, sequence, angleDegrees, step, profile) {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Canvas rendering is not available in this browser.");
+  }
+
+  const { width, height } = canvas;
+  ctx.fillStyle = profile.background;
+  ctx.fillRect(0, 0, width, height);
+
+  const segments = buildMasterSegments(sequence, angleDegrees, step, profile);
+  if (segments.length === 0) {
+    return;
+  }
+
+  const points = [];
+  for (const seg of segments) {
+    points.push(projectPoint({ x: seg.x1, y: seg.y1, z: seg.z1 }));
+    points.push(projectPoint({ x: seg.x2, y: seg.y2, z: seg.z2 }));
+  }
+
+  let minX = points[0].x;
+  let maxX = points[0].x;
+  let minY = points[0].y;
+  let maxY = points[0].y;
+  for (const point of points) {
+    minX = Math.min(minX, point.x);
+    maxX = Math.max(maxX, point.x);
+    minY = Math.min(minY, point.y);
+    maxY = Math.max(maxY, point.y);
+  }
+
+  const drawingWidth = Math.max(1, maxX - minX);
+  const drawingHeight = Math.max(1, maxY - minY);
+  const padding = 38;
+  const scale = Math.min(
+    (width - padding * 2) / drawingWidth,
+    (height - padding * 2) / drawingHeight
+  );
+
+  function toCanvas(point2d) {
+    return {
+      x: (point2d.x - minX) * scale + padding,
+      y: (point2d.y - minY) * scale + padding,
+    };
+  }
+
+  if (profile.circular) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const radius = Math.min(width, height) * 0.3;
+    const slice = (Math.PI * 2) / profile.sides;
+    ctx.lineWidth = 1;
+    for (let i = 0; i < profile.sides; i += 1) {
+      const a1 = i * slice;
+      const a2 = (i + 1) * slice;
+      const p1 = { x: centerX + Math.cos(a1) * radius, y: centerY + Math.sin(a1) * radius };
+      const p2 = { x: centerX + Math.cos(a2) * radius, y: centerY + Math.sin(a2) * radius };
+      ctx.strokeStyle = colorFromPalette(profile.palette, i, 0.25, profile.background);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+  }
+
+  for (const segment of segments) {
+    const a = toCanvas(projectPoint({ x: segment.x1, y: segment.y1, z: segment.z1 }));
+    const b = toCanvas(projectPoint({ x: segment.x2, y: segment.y2, z: segment.z2 }));
+
+    const alpha = Math.min(0.9, 0.4 + segment.depth * 0.05);
+    ctx.strokeStyle = colorFromPalette(profile.palette, segment.index, alpha, profile.background);
+    ctx.lineWidth = Math.min(3.8, 1 + segment.depth * 0.12);
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+
+    if (profile.fold && segment.index % 9 === 0) {
+      ctx.strokeStyle = colorFromPalette(profile.palette, segment.index + 1, 0.22, profile.background);
+      ctx.beginPath();
+      ctx.moveTo(a.x, b.y);
+      ctx.lineTo(b.x, a.y);
+      ctx.stroke();
+    }
+
+    if (profile.cube && segment.cubeMarker) {
+      drawProjectedCube(
+        ctx,
+        { x: segment.x2, y: segment.y2, z: segment.z2 },
+        step * 0.9,
+        (point2d) => toCanvas(point2d),
+        colorFromPalette(profile.palette, segment.index + 2, 0.56, profile.background)
+      );
+    }
+  }
+}
+
+function drawSequence(canvas, sequence, angleDegrees, step, profile) {
   const ctx = canvas.getContext("2d");
   if (!ctx) {
     throw new Error("Canvas rendering is not available in this browser.");
   }
   const { width, height } = canvas;
-  ctx.fillStyle = "#ffffff";
+  const background = profile && profile.background ? profile.background : "#ffffff";
+  ctx.fillStyle = background;
   ctx.fillRect(0, 0, width, height);
 
   const bounds = getBounds(sequence, angleDegrees, step);
@@ -367,7 +684,8 @@ function drawSequence(canvas, sequence, angleDegrees, step) {
   let heading = -Math.PI / 2;
   const stack = [];
 
-  ctx.strokeStyle = "#1f7a1f";
+  const defaultStroke = background === "#ffffff" ? "#1f7a1f" : "#f8fafc";
+  ctx.strokeStyle = defaultStroke;
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(x, y);
@@ -496,7 +814,12 @@ blocksContainer.addEventListener("input", (event) => {
 generateBtn.addEventListener("click", () => {
   appState.blocks = parsePromptToBlocks(promptInput.value);
   renderBlocks();
-  setStatus("Blocks generated from natural language prompt.");
+  const profile = extractPromptProfile(promptInput.value);
+  if (profile.useGeometricMaster) {
+    setStatus(`Blocks generated from natural language prompt. Geometric master mode detected (${profile.sides}-sided).`);
+  } else {
+    setStatus("Blocks generated from natural language prompt.");
+  }
 });
 
 clearBlocksBtn.addEventListener("click", () => {
