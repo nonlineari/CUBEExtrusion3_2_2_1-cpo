@@ -61,6 +61,8 @@ This writes:
 
 The report includes local codec/encoder evidence and links to original FFmpeg VP56 source files on GitHub.
 
+A versioned summary is stored at `cubic-nls/VP56_DEBUG_TESTIMONY.md`.
+
 ## Notes
 
 - This branch is intended as a combined repository candidate.
