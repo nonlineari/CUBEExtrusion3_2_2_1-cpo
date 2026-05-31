@@ -240,7 +240,7 @@ def _parse_track(
             note_key = (channel, data1)
             starts = notes_open.get(note_key, [])
             if starts:
-                start_tick, velocity = starts.pop(0)
+                start_tick, velocity = starts.pop()
                 duration_ticks = max(0, absolute_tick - start_tick)
                 summary["notes_completed"] += 1
                 completed_note_durations.append(duration_ticks)
@@ -263,7 +263,7 @@ def _parse_track(
                 note_key = (channel, data1)
                 starts = notes_open.get(note_key, [])
                 if starts:
-                    start_tick, velocity = starts.pop(0)
+                    start_tick, velocity = starts.pop()
                     duration_ticks = max(0, absolute_tick - start_tick)
                     summary["notes_completed"] += 1
                     completed_note_durations.append(duration_ticks)

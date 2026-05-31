@@ -33,6 +33,25 @@ def _build_minimal_midi() -> bytes:
     return header + track
 
 
+def _build_overlapping_note_midi() -> bytes:
+    header = b"MThd" + (6).to_bytes(4, "big") + (0).to_bytes(2, "big")
+    header += (1).to_bytes(2, "big") + (480).to_bytes(2, "big")
+
+    events = bytearray()
+    events.extend(b"\x00\xff\x51\x03\x07\xa1\x20")  # Set tempo 500000 us/qn
+    events.extend(b"\x00\x90\x3c\x64")  # Note on (tick 0)
+    events.extend(_vlq(10))
+    events.extend(b"\x90\x3c\x64")  # Overlapping note on for same key (tick 10)
+    events.extend(_vlq(20))
+    events.extend(b"\x80\x3c\x40")  # First note off (tick 30)
+    events.extend(_vlq(20))
+    events.extend(b"\x80\x3c\x40")  # Second note off (tick 50)
+    events.extend(b"\x00\xff\x2f\x00")  # End of track
+
+    track = b"MTrk" + len(events).to_bytes(4, "big") + bytes(events)
+    return header + track
+
+
 class MidiToMetadataTests(unittest.TestCase):
     def test_parse_midi_bytes_returns_expected_summary(self) -> None:
         metadata = parse_midi_bytes(_build_minimal_midi())
@@ -74,6 +93,20 @@ class MidiToMetadataTests(unittest.TestCase):
             self.assertTrue(output_path.exists())
             self.assertFalse(midi_path.exists())
             self.assertEqual(metadata["source_midi"], "example.mid")
+
+    def test_overlapping_same_note_events_use_lifo_pairing(self) -> None:
+        metadata = parse_midi_bytes(_build_overlapping_note_midi(), include_notes=True)
+        notes = metadata["tracks"][0]["notes"]
+
+        self.assertEqual(len(notes), 2)
+        # First note-off should close the most recent overlapping note-on.
+        self.assertEqual(notes[0]["start_tick"], 10)
+        self.assertEqual(notes[0]["end_tick"], 30)
+        self.assertEqual(notes[0]["duration_ticks"], 20)
+        # Second note-off then closes the older note-on.
+        self.assertEqual(notes[1]["start_tick"], 0)
+        self.assertEqual(notes[1]["end_tick"], 50)
+        self.assertEqual(notes[1]["duration_ticks"], 50)
 
 
 if __name__ == "__main__":
