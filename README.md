@@ -64,3 +64,33 @@ blob:https://x.com/829cd53f-1c95-4ac2-baad-db1e34108ae5<img width="1191" height=
 blob:https://x.com/6c1affec-5388-40cf-aaca-9648e601b5d6<img width="1191" height="842" alt="image" src="https://github.com/user-attachments/assets/0bb0b08f-4b6c-4513-b603-4878eb87d426" />
 
 
+## MIDI to metadata conversion
+
+When storage or memory pressure is high, you can convert `.mid` files into lightweight metadata JSON.
+This keeps musical structure (timing, notes, tempo, signatures, counts) without storing the full raw event stream.
+
+### Convert MIDI file
+
+```bash
+python3 midi_to_metadata.py path/to/file.mid
+```
+
+By default this writes:
+
+`path/to/file.metadata.json`
+
+### Replace source MIDI after conversion
+
+```bash
+python3 midi_to_metadata.py path/to/file.mid --replace
+```
+
+Use `--replace` only when you are sure you no longer need the original binary MIDI.
+
+### Optional flags
+
+- `-o, --output <path>`: custom output JSON path
+- `--include-notes`: include completed note events in metadata
+- `--max-text-events <n>`: cap stored text meta events per track
+- `--indent <n>`: JSON indentation width (`0` writes compact JSON)
+
