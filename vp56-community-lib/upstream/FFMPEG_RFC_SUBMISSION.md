@@ -22,11 +22,11 @@ It is an RFC for a strategy/capability abstraction layer that:
 
 ## Upstream source references
 
-- https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/vp56.c
-- https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/vp56.h
-- https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/vp6.c
-- https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/allcodecs.c
-- https://github.com/FFmpeg/FFmpeg/blob/master/doc/general_contents.texi
+- https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/libavcodec/vp56.c
+- https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/libavcodec/vp56.h
+- https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/libavcodec/vp6.c
+- https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/libavcodec/allcodecs.c
+- https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/doc/general_contents.texi
 
 ## Suggested submission steps
 

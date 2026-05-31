@@ -19,23 +19,23 @@ from pathlib import Path
 UPSTREAM_REFERENCES = [
     {
         "name": "FFmpeg VP56 common decoder core",
-        "url": "https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/vp56.c",
+        "url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/libavcodec/vp56.c",
     },
     {
         "name": "FFmpeg VP56 decoder header",
-        "url": "https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/vp56.h",
+        "url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/libavcodec/vp56.h",
     },
     {
         "name": "FFmpeg VP6 decoder implementation",
-        "url": "https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/vp6.c",
+        "url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/libavcodec/vp6.c",
     },
     {
         "name": "FFmpeg codec registry (allcodecs.c)",
-        "url": "https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/allcodecs.c",
+        "url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/libavcodec/allcodecs.c",
     },
     {
         "name": "FFmpeg supported codec matrix (general_contents.texi)",
-        "url": "https://github.com/FFmpeg/FFmpeg/blob/master/doc/general_contents.texi",
+        "url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/doc/general_contents.texi",
     },
 ]
 

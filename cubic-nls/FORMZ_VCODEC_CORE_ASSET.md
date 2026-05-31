@@ -17,7 +17,7 @@ Debugging and validation are complete for the current environment:
 1. **Fork or download this repository**
    - `https://github.com/nonlineari/CUBEExtrusion3_2_2_1-cpo`
 2. Check out integration branch:
-   - `cursor/cubic-nls-integration-0bb6`
+   - `cubic-nls-integration-0bb6`
 3. Review core package:
    - `vp56-community-lib/`
 4. Generate RFC bundle:
