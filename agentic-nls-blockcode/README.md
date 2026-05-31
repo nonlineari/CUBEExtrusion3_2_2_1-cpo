@@ -45,3 +45,12 @@ Prompts containing terms such as `cube`, `3 dimensional`, `folding`, `neural`, `
 - color palette extraction (e.g., red/white/blue)
 - sided polygon guidance (e.g., 6-sided)
 - pseudo-3D line projection and cube wireframe accents
+
+## Video export presets (5s / 10s)
+
+Generate `.mp4` output from prompt-driven visual style using FFmpeg:
+
+- `python3 scripts/export_visual_music_video.py --duration 5 --mode h264`
+- `python3 scripts/export_visual_music_video.py --duration 10 --mode auto`
+
+`--mode auto` attempts VP56 bridge (`vp6f`) when available, then encodes final `.mp4` with H.264.

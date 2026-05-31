@@ -24,6 +24,29 @@ cubic-nls is the consolidated integration project built from four draft branches
    - generated sequence
    - status log (renderer mode and rule summary)
 
+
+## MP4 export with FFmpeg (H.264 + VP56 bridge option)
+
+Use the new exporter:
+
+`scripts/export_visual_music_video.py`
+
+Examples:
+
+- 5-second MP4 (direct H.264):
+
+  `python3 scripts/export_visual_music_video.py --duration 5 --mode h264`
+
+- 10-second MP4 (auto mode; uses VP56 bridge when available, otherwise falls back to H.264):
+
+  `python3 scripts/export_visual_music_video.py --duration 10 --mode auto`
+
+- Force VP56 bridge pipeline (vp6f intermediate -> H.264 mp4):
+
+  `python3 scripts/export_visual_music_video.py --duration 10 --mode vp56-bridge --keep-intermediate`
+
+Outputs are written to `output/visual_music_5s.mp4` or `output/visual_music_10s.mp4` by default.
+
 ## Notes
 
 - This branch is intended as a combined repository candidate.
