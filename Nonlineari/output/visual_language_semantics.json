@@ -1,0 +1,81 @@
+{
+  "stream": "In the third man 333 Old Street French Connection l'apartmente a film about clubbing in work of machine learning",
+  "token_map": {
+    "third_man": "shadowy observer / hidden actor in systems (1949 noir OR metaphorical third element in data triples)",
+    "333_Old_Street": "iconic London club venue (Mother / 333 Club, Hoxton) - legendary 90s-2000s techno/house/electronic nights, sweat-soaked dancefloor history",
+    "French_Connection": "L'Appartement (1996 French thriller, dir. Gilles Mimouni) starring Monica Bellucci & Vincent Cassel - obsessive love, identity swaps, apartment as liminal space",
+    "l_apartmente": "the apartment - private/intimate container turning into site of mystery, desire, revelation",
+    "film_about_clubbing": "narrative of nightlife immersion, blurred realities, hedonistic pursuit, post-club disorientation",
+    "machine_learning": "algorithmic pattern recognition in chaotic data (crowd movement, music flow, emotional states) -> predictive models for club experiences, recommendation engines, generative club visuals"
+  },
+  "narrative_bridge": "Barry Can't Swim Late Night Tales (2026) = continuous electronic/ambient/house journey. New input = clubbing filmic layer: 333 Old Street as physical dancefloor apartment where French cinematic obsession meets ML-driven sound design.",
+  "timeline": [
+    {
+      "key": "third_man",
+      "phrase": "third man",
+      "definition": "shadowy observer / hidden actor in systems (1949 noir OR metaphorical third element in data triples)",
+      "start_char": 7,
+      "end_char": 16,
+      "index": 0
+    },
+    {
+      "key": "333_Old_Street",
+      "phrase": "333 Old Street",
+      "definition": "iconic London club venue (Mother / 333 Club, Hoxton) - legendary 90s-2000s techno/house/electronic nights, sweat-soaked dancefloor history",
+      "start_char": 17,
+      "end_char": 31,
+      "index": 1
+    },
+    {
+      "key": "French_Connection",
+      "phrase": "French Connection",
+      "definition": "L'Appartement (1996 French thriller, dir. Gilles Mimouni) starring Monica Bellucci & Vincent Cassel - obsessive love, identity swaps, apartment as liminal space",
+      "start_char": 32,
+      "end_char": 49,
+      "index": 2
+    },
+    {
+      "key": "l_apartmente",
+      "phrase": "l'apartmente",
+      "definition": "the apartment - private/intimate container turning into site of mystery, desire, revelation",
+      "start_char": 50,
+      "end_char": 62,
+      "index": 3
+    },
+    {
+      "key": "film_about_clubbing",
+      "phrase": "film about clubbing",
+      "definition": "narrative of nightlife immersion, blurred realities, hedonistic pursuit, post-club disorientation",
+      "start_char": 65,
+      "end_char": 84,
+      "index": 4
+    },
+    {
+      "key": "machine_learning",
+      "phrase": "machine learning",
+      "definition": "algorithmic pattern recognition in chaotic data (crowd movement, music flow, emotional states) -> predictive models for club experiences, recommendation engines, generative club visuals",
+      "start_char": 96,
+      "end_char": 112,
+      "index": 5
+    }
+  ],
+  "visual_grammar": {
+    "glyphs": {
+      "third_man": "\u25d0",
+      "333_Old_Street": "\u25a6",
+      "French_Connection": "\u232c",
+      "l_apartmente": "\u25a3",
+      "film_about_clubbing": "\u25cd",
+      "machine_learning": "\u25c8"
+    },
+    "colours": {
+      "third_man": "hsl(176 71% 50%)",
+      "333_Old_Street": "hsl(78 71% 48%)",
+      "French_Connection": "hsl(355 81% 52%)",
+      "l_apartmente": "hsl(123 78% 53%)",
+      "film_about_clubbing": "hsl(132 76% 51%)",
+      "machine_learning": "hsl(310 68% 57%)"
+    },
+    "motion": "pulse + orbit mapped to semantic intensity"
+  }
+}

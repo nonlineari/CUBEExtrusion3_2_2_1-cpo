@@ -1,0 +1,39 @@
+SUBJECT: avcodec: introduce vp56-family compatibility strategy helper
+
+Hi ffmpeg-devel,
+
+This RFC proposes a lightweight compatibility strategy helper for VP56-family
+request handling in FFmpeg-adjacent utility workflows.
+
+Motivation:
+- many deployments expose VP56 decode support but not VP56 encode
+- user-facing pipelines often receive ambiguous codec strings (`vp56`, `libxVP56`)
+- downstream wrappers need deterministic behavior for cross-platform MP4 output
+
+Proposed behavior:
+- if VP56 encoder exists: allow VP56 bridge strategy
+- if VP56 encoder is unavailable but VP9 exists: reinterpret to VP9 with `vp09` tag
+- otherwise: fallback to H.264 as a conservative interoperable output path
+- optional truncation-safe fragmented MP4 movflags for partial-transfer scenarios
+
+This RFC is intentionally scoped as a strategy/capability layer and does not
+alter existing VP56 decode internals.
+
+Reference implementation and test package:
+- `vp56-community-lib/` (C API, parser/strategy resolver, tests, demo)
+- `scripts/debug_ffmpeg_vp56_testimony.py` (environment evidence generator)
+- `scripts/export_visual_music_video.py` (practical strategy consumer)
+
+Upstream references:
+- libavcodec/vp56.c
+- libavcodec/vp56.h
+- libavcodec/vp6.c
+- libavcodec/allcodecs.c
+- doc/general_contents.texi
+
+Feedback requested on:
+- API placement (libavcodec helper vs external policy module)
+- naming/behavior defaults for VP56->VP9 reinterpretation
+- acceptance criteria for truncation-safe output policy exposure
+
+Thanks for reviewing.
