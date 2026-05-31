@@ -1,6 +1,15 @@
 CUBEExtrusion3_2_2_1-cpo
 ========================
 
+## New: Agentic NLS Blockcode Studio
+
+This repository now includes a browser-based blockcode app at:
+
+- `agentic-nls-blockcode/index.html`
+
+It translates natural language prompts into visual executable blocks for
+L-system workflows and renders the output directly on a canvas.
+
 IS CREATED TO A DEDICATION FOR GENERAL AUDIENCE WHO LIKE TO PATCH AND CODE
 
 FAIRWALK WAY OR TEST FOR "DENSITY" GENERIC V.1 HACK

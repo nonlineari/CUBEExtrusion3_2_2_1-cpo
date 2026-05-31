@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agentic NLS Blockcode Studio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>Agentic NLS Blockcode Studio</h1>
+      <p>
+        Convert natural language into an executable block workflow with classic L-system and geometric master rendering modes.
+      </p>
+    </header>
+
+    <main class="layout">
+      <section class="panel controls">
+        <h2>1) Natural-language prompt</h2>
+        <textarea
+          id="promptInput"
+          rows="7"
+          placeholder="Example: Complete a build using a folding neural network left 2 right system inside a 3 dimensional circular 6sided folding cube with red, white and blue in black background (0)."
+        ></textarea>
+        <div class="button-row">
+          <button id="generateBtn" type="button">Generate Blocks</button>
+          <button id="clearBlocksBtn" type="button" class="subtle">Clear</button>
+        </div>
+
+        <h2>2) Block palette</h2>
+        <div class="palette">
+          <label for="blockType">Block type</label>
+          <select id="blockType">
+            <option value="setAxiom">Set Axiom</option>
+            <option value="setAngle">Set Angle</option>
+            <option value="addRule">Add Rule</option>
+            <option value="setIterations">Set Iterations</option>
+            <option value="setStep">Set Step Length</option>
+            <option value="render">Render</option>
+          </select>
+          <button id="addBlockBtn" type="button" class="subtle">
+            Add Empty Block
+          </button>
+        </div>
+
+        <h2>3) Workflow blocks</h2>
+        <div id="blocksContainer" class="blocks-container"></div>
+
+        <div class="button-row">
+          <button id="runBtn" type="button">Run Workflow</button>
+          <button id="exportBtn" type="button" class="subtle">
+            Export JSON
+          </button>
+        </div>
+      </section>
+
+      <section class="panel output">
+        <h2>Output</h2>
+        <canvas id="renderCanvas" width="720" height="520"></canvas>
+        <h3>Generated sequence</h3>
+        <pre id="sequenceOut"></pre>
+        <h3>Status</h3>
+        <pre id="statusOut"></pre>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
