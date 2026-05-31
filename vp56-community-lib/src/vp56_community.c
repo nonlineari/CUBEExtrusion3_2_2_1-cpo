@@ -60,6 +60,8 @@ int vp56_parse_codec_name(const char *value, vp56_codec_id *out_codec) {
     *out_codec = VP56_CODEC_VP09;
   } else if (contains_token(value, "vp9")) {
     *out_codec = VP56_CODEC_VP9;
+  } else if (contains_token(value, "vp56") || contains_token(value, "libxvp56")) {
+    *out_codec = VP56_CODEC_VP6F;
   } else if (contains_token(value, "vp6a")) {
     *out_codec = VP56_CODEC_VP6A;
   } else if (contains_token(value, "vp6f")) {
@@ -68,8 +70,6 @@ int vp56_parse_codec_name(const char *value, vp56_codec_id *out_codec) {
     *out_codec = VP56_CODEC_VP6;
   } else if (contains_token(value, "vp5")) {
     *out_codec = VP56_CODEC_VP5;
-  } else if (contains_token(value, "vp56") || contains_token(value, "libxvp56")) {
-    *out_codec = VP56_CODEC_VP6F;
   } else {
     *out_codec = VP56_CODEC_UNKNOWN;
   }
